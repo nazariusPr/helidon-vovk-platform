@@ -1,0 +1,254 @@
+openapi: 3.0.3
+info:
+  title: Inspection API
+  version: 1.0.0
+  description: REST API for managing inspections
+
+servers:
+  - url: http://localhost:9300
+
+paths:
+
+  /inspections:
+    get:
+      summary: Get all inspections
+      description: Requires ADMIN or INSPECTOR role
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: List of inspections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Inspection'
+
+    post:
+      summary: Create new inspection
+      description: Requires ADMIN role
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInspectionRequest'
+      responses:
+        '201':
+          description: Inspection created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  message:
+                    type: string
+
+  /inspections/{id}:
+    get:
+      summary: Get inspection by ID
+      description: Requires ADMIN or INSPECTOR role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Inspection found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inspection'
+        '404':
+          description: Inspection not found
+
+    put:
+      summary: Update inspection
+      description: Requires ADMIN role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInspectionRequest'
+      responses:
+        '200':
+          description: Number of updated inspections
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: integer
+
+  /inspections/by-code/{code}:
+    get:
+      summary: Get inspection by code
+      description: Requires ADMIN or INSPECTOR role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Inspection found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inspection'
+        '404':
+          description: Inspection not found
+
+  /inspections/in-memory/{id}:
+    delete:
+      summary: Delete inspection from in-memory storage
+      description: Requires ADMIN role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Inspection deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted:
+                    type: integer
+                  message:
+                    type: string
+
+  /inspections/in-db/{id}:
+    delete:
+      summary: Delete inspection from database
+      description: Requires ADMIN role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Inspection deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted:
+                    type: integer
+                  message:
+                    type: string
+
+  /inspections/flush:
+    post:
+      summary: Flush in-memory inspections to database
+      description: Requires ADMIN role
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Number of flushed inspections
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flushed:
+                    type: integer
+                  message:
+                    type: string
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    Inspection:
+      type: object
+      properties:
+        id:
+          type: integer
+        inspectionCode:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        inspectionType:
+          type: string
+        location:
+          type: string
+        scheduledDate:
+          type: string
+          format: date
+        completedDate:
+          type: string
+          format: date
+        status:
+          type: string
+        inspector:
+          type: string
+
+    CreateInspectionRequest:
+      type: object
+      required:
+        - inspectionCode
+        - title
+      properties:
+        inspectionCode:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        inspectionType:
+          type: string
+        location:
+          type: string
+        scheduledDate:
+          type: string
+          format: date
+        completedDate:
+          type: string
+          format: date
+        status:
+          type: string
+        inspector:
+          type: string

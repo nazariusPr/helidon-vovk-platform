@@ -1,0 +1,272 @@
+openapi: 3.0.3
+info:
+  title: Equipment API
+  version: 1.1.0
+  description: REST API for managing equipments
+
+servers:
+  - url: http://localhost:9200
+
+paths:
+
+  /equipments:
+    get:
+      summary: Get all equipments
+      description: Requires ADMIN or INSPECTOR role
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: List of equipments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Equipment'
+
+    post:
+      summary: Create new equipment
+      description: Requires ADMIN role
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEquipmentRequest'
+      responses:
+        '201':
+          description: Equipment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Equipment'
+
+    delete:
+      summary: Delete all equipments
+      description: Requires ADMIN role
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Number of deleted equipments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted:
+                    type: integer
+
+  /equipments/page:
+    get:
+      summary: Get paginated equipments
+      description: Requires ADMIN or INSPECTOR role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Paginated equipments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EquipmentPage'
+
+  /equipments/{id}:
+    get:
+      summary: Get equipment by ID
+      description: Requires ADMIN or INSPECTOR role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Found equipment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Equipment'
+        '404':
+          description: Equipment not found
+
+    put:
+      summary: Update equipment
+      description: Requires ADMIN role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEquipmentRequest'
+      responses:
+        '200':
+          description: Equipment updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Equipment'
+
+    delete:
+      summary: Delete equipment by ID
+      description: Requires ADMIN role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Equipment deleted
+
+  /equipments/by-number/{equipmentNumber}:
+    get:
+      summary: Get equipment by equipment number
+      description: Requires ADMIN or INSPECTOR role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: equipmentNumber
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Found equipment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Equipment'
+        '404':
+          description: Equipment not found
+
+  /equipments/upload:
+    post:
+      summary: Upload equipments from CSV file
+      description: Requires ADMIN role. Upload CSV file with optional delimiter and header flag.
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                delimiter:
+                  type: string
+                  description: CSV delimiter character
+                  example: ","
+                hasHeader:
+                  type: boolean
+                  description: Indicates whether the CSV contains a header row
+                  default: true
+      responses:
+        '200':
+          description: Number of uploaded equipments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploaded:
+                    type: integer
+        '400':
+          description: Failed to read uploaded file
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    Equipment:
+      type: object
+      properties:
+        id:
+          type: integer
+        equipmentNumber:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        manufacturer:
+          type: string
+        year:
+          type: integer
+        status:
+          type: string
+
+    CreateEquipmentRequest:
+      type: object
+      required:
+        - equipmentNumber
+        - name
+      properties:
+        equipmentNumber:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        manufacturer:
+          type: string
+        year:
+          type: integer
+        status:
+          type: string
+
+    EquipmentPage:
+      type: object
+      properties:
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Equipment'
