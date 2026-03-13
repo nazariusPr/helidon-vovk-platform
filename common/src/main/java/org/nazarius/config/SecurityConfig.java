@@ -14,7 +14,7 @@ public class SecurityConfig {
         Config config = getConfig();
 
         // Load verification key
-        String verifyKeyResource = config.get("security.providers.jwt.verify-key-resource")
+        String verifyKeyResource = config.get("security.providers.jwt.verify.key.resource")
                 .asString()
                 .orElseThrow(() -> new IllegalStateException("JWT verifying key resource not configured"));
 

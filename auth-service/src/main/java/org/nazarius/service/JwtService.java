@@ -27,7 +27,7 @@ public class JwtService {
     public JwtService() {
         Config config = getConfig();
 
-        String signingKeyResource = config.get("security.providers.jwt.signing-key-resource")
+        String signingKeyResource = config.get("security.providers.jwt.signing.key.resource")
                 .asString()
                 .orElseThrow(() -> new IllegalStateException("JWT signing key resource not configured"));
 
@@ -43,7 +43,7 @@ public class JwtService {
                 .asString()
                 .orElse("helidon-jwt-demo");
 
-        this.expirationSeconds = config.get("security.providers.jwt.expiration-seconds")
+        this.expirationSeconds = config.get("security.providers.jwt.expiration.seconds")
                 .asLong()
                 .orElse(3600L);
     }
