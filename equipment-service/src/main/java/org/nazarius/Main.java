@@ -15,6 +15,7 @@ import org.nazarius.repository.EquipmentRepositoryCsv;
 import org.nazarius.repository.EquipmentRepositoryDb;
 import org.nazarius.service.EquipmentService;
 
+import static org.nazarius.config.GeneralConfig.getConfig;
 import static org.nazarius.config.SecurityConfig.createSecurity;
 
 public class Main extends ServerApp {
@@ -49,7 +50,7 @@ public class Main extends ServerApp {
      */
     @Override
     protected void configureFeatures(WebServerConfig.Builder serverBuilder) {
-        Config config = Config.create();
+        Config config = getConfig();
         serverBuilder.addFeature(
                 OpenApiFeature.create(config.get("openapi"))
         );
@@ -70,7 +71,7 @@ public class Main extends ServerApp {
      */
 
     private EquipmentService createEquipmentService() {
-        Config config = Config.create();
+        Config config = getConfig();
 
         // Read DB config
         String url = config.get("db.url").asString().get();

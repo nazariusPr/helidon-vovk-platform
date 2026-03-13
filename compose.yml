@@ -1,0 +1,70 @@
+services:
+  auth-service:
+    build:
+      context: ./auth-service
+    image: auth-service:latest
+    container_name: auth-service
+    env_file:
+      - .env
+    ports:
+      - "9100:9100"
+    volumes:
+      - ./jwt-keys.json:/app/jwt-keys.json
+    depends_on:
+      - db
+    networks:
+      - helidon_network
+
+  equipment-service:
+    build:
+      context: ./equipment-service
+    image: equipment-service:latest
+    container_name: equipment-service
+    env_file:
+      - .env
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./jwt-keys.json:/app/jwt-keys.json
+    depends_on:
+      - db
+    networks:
+      - helidon_network
+
+  inspection-service:
+    build:
+      context: ./inspection-service
+    image: inspection-service:latest
+    container_name: inspection-service
+    env_file:
+      - .env
+    ports:
+      - "9300:9300"
+    volumes:
+      - ./jwt-keys.json:/app/jwt-keys.json
+    depends_on:
+      - db
+    networks:
+      - helidon_network
+
+  db:
+    image: postgres:17
+    container_name: helidon-db
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - helidon_network
+
+networks:
+  helidon_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

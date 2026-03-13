@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.nazarius.config.GeneralConfig.getConfig;
+
 
 public class JwtService {
 
@@ -23,7 +25,7 @@ public class JwtService {
      * Load JWT configuration from application.properties and JWK resource
      */
     public JwtService() {
-        Config config = Config.create();
+        Config config = getConfig();
 
         String signingKeyResource = config.get("security.providers.jwt.signing-key-resource")
                 .asString()

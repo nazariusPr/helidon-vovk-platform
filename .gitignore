@@ -4,6 +4,7 @@ target/
 !**/src/test/**/target/
 .kotlin
 .env
+**/jwt-keys.json
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

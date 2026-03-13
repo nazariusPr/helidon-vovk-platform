@@ -6,10 +6,12 @@ import io.helidon.security.providers.jwt.JwtProvider;
 import io.helidon.security.util.TokenHandler;
 import io.helidon.common.configurable.Resource;
 
+import static org.nazarius.config.GeneralConfig.getConfig;
+
 public class SecurityConfig {
 
     public static Security createSecurity() {
-        Config config = Config.create();
+        Config config = getConfig();
 
         // Load verification key
         String verifyKeyResource = config.get("security.providers.jwt.verify-key-resource")

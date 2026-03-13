@@ -17,6 +17,7 @@ import org.nazarius.repository.InspectionRepositoryInMemory;
 import org.nazarius.service.InspectionService;
 import org.nazarius.http.InspectionHttpService;
 
+import static org.nazarius.config.GeneralConfig.getConfig;
 import static org.nazarius.config.SecurityConfig.createSecurity;
 
 public class Main extends ServerApp {
@@ -51,7 +52,7 @@ public class Main extends ServerApp {
      */
     @Override
     protected void configureFeatures(WebServerConfig.Builder serverBuilder) {
-        Config config = Config.create();
+        Config config = getConfig();
         serverBuilder.addFeature(
                 OpenApiFeature.create(config.get("openapi"))
         );
@@ -72,13 +73,17 @@ public class Main extends ServerApp {
      */
 
     private InspectionService createInspectionService() {
-        // DB entity manager
-        EntityManagerFactory.DatabaseConfig dbConfig = new EntityManagerFactory.DatabaseConfig(
-                "jdbc:postgresql://localhost:5432/helidon_vovk_platform",
-                "postgres",
-                "root"
+        Config config = getConfig();
+
+        // Read DB config
+        String url = config.get("db.url").asString().get();
+        String username = config.get("db.username").asString().get();
+        String password = config.get("db.password").asString().get();
+
+        // Initialize entity managers
+        JdbcEntityManager jdbcEntityManager = EntityManagerFactory.db(
+                new EntityManagerFactory.DatabaseConfig(url, username, password)
         );
-        JdbcEntityManager jdbcEntityManager = EntityManagerFactory.db(dbConfig);
 
         // In-memory entity manager
         InMemoryEntityManager inMemoryEntityManager = EntityManagerFactory.inMemory();
