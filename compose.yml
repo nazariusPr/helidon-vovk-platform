@@ -8,8 +8,9 @@ services:
       - .env
     ports:
       - "9100:9100"
-    volumes:
-      - ./jwt-keys.json:/app/jwt-keys.json
+    # Optional: mount custom jwt-keys.json and set SECURITY_PROVIDERS_JWT_SIGNING_KEY_RESOURCE=/app/jwt-keys.json in .env
+    # volumes:
+    #   - ./jwt-keys.json:/app/jwt-keys.json
     depends_on:
       - db
     networks:
