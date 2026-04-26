@@ -199,7 +199,6 @@ public class InspectionHttpService implements HttpService {
         InspectionDto dto = new InspectionDto();
         if (id != null) dto.setId(id);
 
-        dto.setId(json.getInt("id"));
         dto.setInspectionCode(json.getString("inspectionCode", null));
         dto.setTitle(json.getString("title", null));
         dto.setDescription(json.getString("description", null));

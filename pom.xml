@@ -16,6 +16,7 @@
         <module>auth-service</module>
         <module>equipment-service</module>
         <module>inspection-service</module>
+        <module>gis</module>
     </modules>
 
     <!-- ================= Properties ================= -->
@@ -30,6 +31,7 @@
         <postgres.version>42.7.9</postgres.version>
         <aa.common>1.0-SNAPSHOT</aa.common>
         <smallrye.version>4.0.11</smallrye.version>
+        <jts.version>1.20.0</jts.version>
     </properties>
 
     <!-- ================= Dependency Management ================= -->
@@ -57,6 +59,14 @@
                 <groupId>io.smallrye</groupId>
                 <artifactId>smallrye-open-api-ui</artifactId>
                 <version>${smallrye.version}</version>
+            </dependency>
+
+            <!-- JTS Topology Suite -->
+            <dependency>
+                <groupId>org.locationtech.jts</groupId>
+                <artifactId>jts-core</artifactId>
+                <version>${jts.version}</version>
+                <scope>compile</scope>
             </dependency>
 
             <!-- Vovk ecosystem -->

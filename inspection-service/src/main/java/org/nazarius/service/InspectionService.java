@@ -60,7 +60,16 @@ public class InspectionService {
 
     public int save(InspectionDto dto) {
         Inspection entity = InspectionMapper.toEntity(dto);
-        return inMemoryRepository.save(entity);
+        int saved = inMemoryRepository.save(entity);
+
+        if (saved == 0) {
+            throw new IllegalStateException(
+                    "Failed to create inspection. Affected rows: " + saved
+            );
+        }
+        Inspection savedInspection = inMemoryRepository.findByInspectionCode(dto.getInspectionCode())
+                .orElseThrow(() -> new IllegalStateException("Inspection was saved but not found"));
+        return savedInspection.getId();
     }
 
     public int update(InspectionDto dto) {

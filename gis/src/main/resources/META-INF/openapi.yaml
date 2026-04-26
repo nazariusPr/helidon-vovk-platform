@@ -1,0 +1,107 @@
+openapi: 3.0.3
+info:
+  title: Road API
+  version: 1.0.0
+  description: REST API for reading roads
+
+servers:
+  - url: http://localhost:9400
+
+paths:
+
+  /roads:
+    get:
+      summary: Get all roads
+      description: Public endpoint
+      responses:
+        '200':
+          description: List of roads
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Road'
+
+  /roads/{id}:
+    get:
+      summary: Get road by ID
+      description: Requires ADMIN or INSPECTOR role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Road found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Road'
+        '404':
+          description: Road not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /roads/by-name/{name}:
+    get:
+      summary: Get road by name
+      description: Requires ADMIN or INSPECTOR role
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Road found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Road'
+        '404':
+          description: Road not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    Road:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        geom:
+          type: string
+          description: WKT representation of geometry
+        lengthMeters:
+          type: number
+          format: double
+          description: Road length in meters
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string

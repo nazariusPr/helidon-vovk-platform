@@ -9,6 +9,7 @@ import org.nazarius.model.User;
 import java.util.List;
 import java.util.Optional;
 
+import static org.nazarius.VovkDataCore.dsl.Conditions.eq;
 import static org.nazarius.VovkORM.sql.builder.Select.select;
 import static org.nazarius.VovkORM.sql.common.Where.column;
 
@@ -24,13 +25,10 @@ public class UserRepository {
     }
 
     public Optional<User> findByUsername(String username) {
-        // Build SELECT query using VovkORM DSL
-        Select select = select()
-                .from("users")
-                .where(column("username").eq(username));
-
-        // Execute the query
-        List<User> users = manager.find(select, User.class);
+        final String USERNAME = User.USERNAME();
+        List<User> users = manager.query(User.class)
+                .where(eq(USERNAME, username))
+                .list();
 
         if (users.isEmpty()) {
             return Optional.empty();

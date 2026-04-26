@@ -10,17 +10,18 @@ import org.nazarius.VovkDataCore.enums.GenerationType;
 public class User {
 
     @PrimaryKey(strategy = GenerationType.AUTO)
+    @Column(name = UserFields.ID)
     private Integer id;
 
-    @Column(name = "username", unique = true, length = 100)
+    @Column(name = UserFields.USERNAME, unique = true, length = 100)
     @Validate(notBlank = true, minLength = 3, maxLength = 100)
     private String username;
 
-    @Column(name = "password")
+    @Column(name = UserFields.PASSWORD)
     @Validate(notBlank = true, minLength = 6)
     private String password;
 
-    @Column(name = "role", length = 50)
+    @Column(name = UserFields.ROLE, length = 50)
     @Validate(notBlank = true)
     private String role;
 
@@ -34,7 +35,6 @@ public class User {
         this.role = role;
     }
 
-    // Getters and setters
     public Integer getId() {
         return id;
     }
@@ -65,5 +65,32 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+
+    public static String ID() {
+        return UserFields.ID;
+    }
+
+    public static String USERNAME() {
+        return UserFields.USERNAME;
+    }
+
+    public static String PASSWORD() {
+        return UserFields.PASSWORD;
+    }
+
+    public static String ROLE() {
+        return UserFields.ROLE;
+    }
+
+    public static final class UserFields {
+        public static final String ID = "id";
+        public static final String USERNAME = "username";
+        public static final String PASSWORD = "password";
+        public static final String ROLE = "role";
+
+        private UserFields() {
+        }
     }
 }
