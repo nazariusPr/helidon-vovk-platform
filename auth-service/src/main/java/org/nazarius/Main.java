@@ -1,7 +1,9 @@
 package org.nazarius;
 
 import io.helidon.config.Config;
+import io.helidon.cors.CrossOriginConfig;
 import io.helidon.openapi.OpenApiFeature;
+import io.helidon.openapi.OpenApiFeatureConfig;
 import io.helidon.security.Security;
 import io.helidon.webserver.WebServerConfig;
 import io.helidon.webserver.http.HttpRouting;
@@ -49,7 +51,7 @@ public class Main extends ServerApp {
         // UserHttpService needs UserService
         routingBuilder.register("/users", new UserHttpService(userService));
         // AuthHttpService needs AuthService
-        routingBuilder.register("/auth", new AuthHttpService(authService));
+        routingBuilder.register("/", new AuthHttpService(authService));
 
         return routingBuilder;
     }
@@ -59,10 +61,15 @@ public class Main extends ServerApp {
      */
     @Override
     protected void configureFeatures(WebServerConfig.Builder serverBuilder) {
-        Config config = getConfig();
-        serverBuilder.addFeature(
-                OpenApiFeature.create(config.get("openapi"))
+        OpenApiFeature openApiFeature = OpenApiFeature.create(builder ->
+                builder.staticFile("META-INF/openapi.yaml")
+                        .cors(CrossOriginConfig.builder()
+                                .allowOrigins("*")
+                                .build())
+                        .isEnabled(true)
         );
+
+        serverBuilder.addFeature(openApiFeature);
     }
 
     /**

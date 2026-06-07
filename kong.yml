@@ -1,0 +1,23 @@
+_format_version: "2.1"
+
+services:
+  - name: auth-service
+    url: http://auth-service:9100
+    routes:
+      - name: auth-route
+        paths:
+          - /auth
+
+  - name: equipment-service
+    url: http://equipment-service:9200
+    routes:
+      - name: equipment-route
+        paths:
+          - /equipment
+
+  - name: inspection-service
+    url: http://inspection-service:9300
+    routes:
+      - name: inspection-route
+        paths:
+          - /inspection
